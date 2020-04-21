@@ -1,0 +1,130 @@
+<html>
+<head>
+<title>top riches man in thr world</title>
+<link rel="stylesheet" href="dragon.css">
+</head>
+<body>
+
+<h1>Топ 10 самых богатых людей в мире</h1>
+<ul class="drag-list" id="drag-list"></ul>
+<button class="check-btn" id="check">проверить порядок </button>
+
+   <script>
+let dragList = document.getElementById("drag-list");
+let check = document.getElementById("check");
+
+let richestPeople = [
+
+"Jeff Bezos",
+  "Bill Gates",
+  "Warren Buffett",
+  "Bernard Arnault",
+  "Carlos Slim Helu",
+  "Amancio Orgeta",
+  "Larry Ellison",
+  "Mark Zurckerberg",
+  "Michael Bloomberg",
+  "Larry Page",
+
+];
+
+
+
+let ListItems = []
+let dragStartIndex;
+
+craeteList();
+
+function craeteList(){
+[...richestPeople]
+.map((el) => ({value: el, sort: Math.random()}))
+.sort((a, b) => a.sort - b.sort)
+.map((a => a.value))
+.forEach((person,index) =>{
+   console.log(person)
+    let ListItem = document.createElement("li")
+     ListItem.setAttribute("data-index",index)
+     ListItem.innerHTML = `<span class="number">${index + 1}</span>
+     <div class="draggable" draggable="true">
+     <p class="person-name">${person}</p>
+     </div>
+     `
+     ListItems.push(ListItem)
+dragList.appendChild(ListItem)
+})
+addEventListeners()
+}
+
+function dragStart(){
+  // console.log('Event', 'dragstart')
+  dragStartIndex = +this.closest("li").getAttribute("data-index")
+  //console.log("this", this)
+  //console.log("dragStartIndex", dragStartIndex)
+}
+function dragEnter(){
+   this.classList.add("over")
+   //console.log('Event', 'dragenter')
+}
+function dragOver(e){
+   //console.log('Event', 'dragover')
+   e.preventDefault()
+}
+function dragLeave(){
+   //console.log('Event', 'dragleave')
+   this.classList.remove("over")
+}
+
+function dragDrop(){
+   //console.log('Event', 'dragdrop')
+
+   let dragEndIndex = +this.getAttribute("data-index")
+   swapItems(dragStartIndex, dragEndIndex)
+   this.classList.remove("over")
+}
+
+function swapItems(fromIndex, toIndex){
+   let itemOne = ListItems[fromIndex].querySelector('.draggable')
+   let itemTwo = ListItems[toIndex].querySelector('.draggable')
+   ListItems[fromIndex].appendChild(itemTwo)
+   ListItems[toIndex].appendChild(itemOne)
+}
+function checkOrder(){
+   ListItems.forEach((listItem, index) =>{
+let personName = listItem.querySelector('.draggable').innerText.trim()
+if(personName !== richestPeople[index]){
+   listItem.classList.add("wrong")
+} else{
+   listItem.classList.remove("wrong")
+   listItem.classList.add("right")
+
+}
+
+   })
+}
+
+function addEventListeners(){
+   let draggables = document.querySelectorAll(".draggable")
+   let dragListItems = document.querySelectorAll(".drag-list li")
+
+   draggables.forEach((draggable) =>{
+draggable.addEventListener("dragstart", dragStart)
+
+   })
+
+   dragListItems.forEach((item) => {
+     item.addEventListener('dragover',dragOver);
+     item.addEventListener("drop", dragDrop);
+     item.addEventListener("dragenter", dragEnter);
+     item.addEventListener("dragleave", dragLeave);
+   })
+}
+
+check.addEventListener("click", checkOrder)
+
+   </script> 
+</body>
+
+
+
+
+</html>
